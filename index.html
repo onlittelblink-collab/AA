@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arcadia Arcana — Tarot Shop Landing Page</title>
+
+  <!-- Inter Tight Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- GSAP & ScrollTrigger for smooth motion -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+    }
+    body {
+      font-family: 'Inter Tight', sans-serif;
+      background-color: #000;
+      color: #fff;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    .exclusion-mode {
+      mix-blend-mode: exclusion;
+    }
+    .bp-card {
+      aspect-ratio: 2 / 3;
+      will-change: transform, opacity;
+    }
+    .bp-card img {
+      transition: transform 0.7s cubic-bezier(0.25, 0.1, 0.25, 1);
+    }
+    .bp-card:hover img {
+      transform: scale(1.06);
+    }
+
+    /* Hero subtle ken-burns zoom for a livelier feel */
+    #hero-video {
+      transform: scale(1.06);
+      will-change: transform, opacity;
+    }
+
+    /* Reliable full-screen height on mobile browsers (avoids iOS Safari
+       address-bar resize cutting off the hero video). Falls back to
+       100vh on browsers without dvh support. */
+    #hero-container {
+      height: 100vh;
+      height: 100dvh;
+    }
+
+    /* Custom exclusion cursor (desktop only) */
+    #custom-cursor {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 48px;
+      height: 48px;
+      pointer-events: none;
+      z-index: 50;
+      mix-blend-mode: exclusion;
+      transform: translate(-50%, -50%);
+      will-change: transform;
+    }
+    @media (min-width: 1024px) {
+      body.custom-cursor-active {
+        cursor: none !important;
+      }
+      body.custom-cursor-active * {
+        cursor: none !important;
+      }
+    }
+    @media (max-width: 1023px) {
+      #custom-cursor { display: none; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .bp-card, #hero-video, #custom-cursor {
+        transition: none !important;
+        animation: none !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-black text-white select-none relative">
+
+  <!-- Custom exclusion cursor (desktop) -->
+  <div id="custom-cursor">
+    <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="24" cy="24" r="22.75" stroke="#FFFFFF" stroke-width="2.5" fill="none" />
+      <path d="M24 14V34M14 24H34" stroke="#FFFFFF" stroke-width="2.5" stroke-linecap="round" />
+    </svg>
+  </div>
+
+  <!-- Top Left Logo -->
+  <div id="brand-logo" class="fixed z-20 top-4 left-4 lg:top-8 lg:left-8 w-[124px] sm:w-[266px] lg:w-[355px] exclusion-mode pointer-events-none">
+    <svg viewBox="0 0 355 110" fill="none" class="w-full h-auto">
+      <text x="0" y="82" fill="white" font-size="92" font-weight="700" letter-spacing="-0.06em" font-family="'Inter Tight', sans-serif">arcana</text>
+      <circle cx="355" cy="30" r="14" stroke="white" stroke-width="3" fill="none" />
+      <text x="355" y="35" fill="white" font-size="16" font-weight="600" text-anchor="middle" font-family="'Inter Tight', sans-serif">R</text>
+    </svg>
+  </div>
+
+  <!-- Caption Text -->
+  <div id="caption-text" class="fixed z-20 left-4 lg:left-8 top-[118px] sm:top-[180px] lg:top-[244px] w-[calc(100vw-32px)] sm:w-[calc(50vw-48px)] lg:w-[692px] exclusion-mode pointer-events-none text-[12px] leading-[140%] tracking-[-0.04em] font-medium text-white">
+    A tarot sanctuary where you feel truly recognized in your most authentic self.
+  </div>
+
+  <!-- Top Right Navigation -->
+  <div id="top-nav" class="fixed z-20 top-4 right-4 lg:top-8 lg:right-8 w-auto lg:w-[330px] h-[30px] flex items-center justify-between exclusion-mode pointer-events-none">
+    <span class="hidden lg:block text-[15px] font-medium uppercase text-white tracking-tight">TAROT SHOP</span>
+    <div class="flex items-center gap-[20px] lg:gap-[50px]">
+      <svg class="w-[24px] h-[24px] lg:w-[30px] lg:h-[30px]" viewBox="0 0 40 40" fill="none">
+        <path d="M0 14H40" stroke="white" stroke-width="2.5"/>
+        <path d="M0 26H40" stroke="white" stroke-width="2.5"/>
+      </svg>
+    </div>
+  </div>
+
+  <!-- Hero Video Canvas -->
+  <div id="hero-container" class="w-full relative flex items-center justify-center overflow-hidden bg-zinc-900">
+    <video id="hero-video" autoplay loop muted playsinline class="absolute inset-0 w-full h-full object-cover opacity-80">
+      <source src="assets/hero-logo-3d.mp4" type="video/mp4">
+    </video>
+  </div>
+
+  <!-- Gallery Grid Section -->
+  <section class="w-full bg-black py-24 px-4 lg:px-12">
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 lg:gap-12 w-full max-w-[1600px] mx-auto">
+
+      <!-- Card 1 -->
+      <div class="bp-card gallery-card w-full relative overflow-hidden rounded-sm bg-zinc-800">
+        <img src="images/gallery-01.png" alt="arcana 1" class="w-full h-full object-cover">
+      </div>
+
+      <!-- Empty Slot -->
+      <div class="hidden lg:block bp-card"></div>
+
+      <!-- Card 2 -->
+      <div class="bp-card gallery-card w-full relative overflow-hidden rounded-sm bg-zinc-800">
+        <img src="images/gallery-02.png" alt="arcana 2" class="w-full h-full object-cover">
+      </div>
+
+      <!-- Empty Slot -->
+      <div class="hidden lg:block bp-card"></div>
+
+      <!-- Card 3 -->
+      <div class="bp-card gallery-card w-full relative overflow-hidden rounded-sm bg-zinc-800">
+        <img src="images/gallery-03.jpg" alt="arcana 3" class="w-full h-full object-cover">
+      </div>
+
+      <!-- Card 4 -->
+      <div class="bp-card gallery-card w-full relative overflow-hidden rounded-sm bg-zinc-800">
+        <img src="images/gallery-04.png" alt="arcana 4" class="w-full h-full object-cover">
+      </div>
+
+      <!-- Card 5 -->
+      <div class="bp-card gallery-card w-full relative overflow-hidden rounded-sm bg-zinc-800">
+        <img src="images/gallery-05.png" alt="arcana 5" class="w-full h-full object-cover">
+      </div>
+
+      <!-- Card 6 -->
+      <div class="bp-card gallery-card w-full relative overflow-hidden rounded-sm bg-zinc-800">
+        <img src="images/gallery-06.png" alt="arcana 6" class="w-full h-full object-cover">
+      </div>
+
+      <!-- Card 7 -->
+      <div class="bp-card gallery-card w-full relative overflow-hidden rounded-sm bg-zinc-800">
+        <img src="images/gallery-07.png" alt="arcana 7" class="w-full h-full object-cover">
+      </div>
+
+      <!-- Card 8 -->
+      <div class="bp-card gallery-card w-full relative overflow-hidden rounded-sm bg-zinc-800">
+        <img src="images/gallery-08.png" alt="arcana 8" class="w-full h-full object-cover">
+      </div>
+
+      <!-- Card 9 -->
+      <div class="bp-card gallery-card w-full relative overflow-hidden rounded-sm bg-zinc-800">
+        <img src="images/gallery-09.png" alt="arcana 9" class="w-full h-full object-cover">
+      </div>
+
+      <!-- Card 10 -->
+      <div class="bp-card gallery-card w-full relative overflow-hidden rounded-sm bg-zinc-800">
+        <img src="images/gallery-10.png" alt="arcana 10" class="w-full h-full object-cover">
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Bottom Right Product Info & Outro -->
+  <div id="bottom-info" class="fixed pointer-events-none z-20 flex flex-col items-center left-0 right-0 bottom-12 lg:left-auto lg:right-8 lg:bottom-[80px] lg:w-[330px] exclusion-mode">
+    <div class="flex flex-col items-start w-[252px] lg:w-full mb-3 lg:mb-8">
+      <div class="relative w-[20px] h-[20px] lg:w-[30px] lg:h-[30px] flex items-center justify-center mb-2">
+        <svg class="w-full h-full" viewBox="0 0 40 40">
+          <circle cx="20" cy="20" r="18.75" stroke="white" stroke-width="2.5" fill="none" />
+        </svg>
+        <span class="absolute inset-0 flex items-center justify-center text-[10px] lg:text-[15px] font-medium text-white uppercase tracking-tighter">8</span>
+      </div>
+      <div class="text-[20px] lg:text-[30px] font-medium leading-[100%] text-center uppercase tracking-tighter text-white">
+        A TRUSTWORTHY<br>FORTUNE-TELLER
+      </div>
+    </div>
+  </div>
+
+  <!-- Outro Footer -->
+  <div id="outro-footer" class="fixed pointer-events-none z-20 left-4 bottom-[24px] lg:left-4 lg:bottom-8 right-4 lg:right-auto flex items-center justify-between lg:gap-[80px] exclusion-mode">
+    <span class="text-[11px] lg:text-[13px] font-medium tracking-tight text-white uppercase">ARCADIA ARCANA ® 2024</span>
+  </div>
+
+  <script>
+    gsap.registerPlugin(ScrollTrigger);
+
+    // ---- Intro entrance: staggered fade + rise, matching original brand motion ----
+    gsap.timeline({ defaults: { ease: 'power2.out', duration: 0.6 } })
+      .from('#brand-logo', { opacity: 0, y: 12 }, 0)
+      .from('#top-nav', { opacity: 0, y: 12 }, 0.15)
+      .from('#caption-text', { opacity: 0, y: 12 }, 0.3)
+      .from('#bottom-info', { opacity: 0, y: 12 }, 0.45)
+      .from('#outro-footer', { opacity: 0, y: 12 }, 0.5);
+
+    // ---- Hero: gentle Ken Burns zoom-out + fade-in on load ----
+    gsap.fromTo('#hero-video',
+      { scale: 1.06, opacity: 0 },
+      { scale: 1, opacity: 0.8, duration: 1.8, ease: 'power2.out' }
+    );
+
+    // ---- Gallery cards: scale/fade in as they enter viewport while scrolling ----
+    gsap.utils.toArray('.gallery-card').forEach((card) => {
+      gsap.fromTo(card,
+        { opacity: 0, scale: 0.85, y: 40 },
+        {
+          opacity: 1,
+          scale: 1,
+          y: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: card,
+            start: 'top 88%',
+            toggleActions: 'play none none reverse'
+          }
+        }
+      );
+    });
+
+    // ---- Custom exclusion cursor with smooth trailing lerp (desktop only) ----
+    (function initCustomCursor() {
+      if (window.innerWidth < 1024) return;
+
+      document.body.classList.add('custom-cursor-active');
+      const cursor = document.getElementById('custom-cursor');
+      let targetX = window.innerWidth / 2;
+      let targetY = window.innerHeight / 2;
+      let curX = targetX;
+      let curY = targetY;
+
+      window.addEventListener('mousemove', (e) => {
+        targetX = e.clientX;
+        targetY = e.clientY;
+      });
+
+      function raf() {
+        curX += (targetX - curX) * 0.2;
+        curY += (targetY - curY) * 0.2;
+        cursor.style.transform = `translate(${curX}px, ${curY}px) translate(-50%, -50%)`;
+        requestAnimationFrame(raf);
+      }
+      requestAnimationFrame(raf);
+
+      window.addEventListener('resize', () => {
+        if (window.innerWidth < 1024) {
+          document.body.classList.remove('custom-cursor-active');
+          cursor.style.display = 'none';
+        } else {
+          document.body.classList.add('custom-cursor-active');
+          cursor.style.display = 'block';
+        }
+      });
+    })();
+  </script>
+
+</body>
+</html>
